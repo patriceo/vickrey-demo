@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 /**
  * This is a simple implementation for Vickrey auction algorithm.
  * This is very simple, so it does not rely on junit, or build tool or use different class files.
- * Just need to compile & run this unique class. 
+ * Just need to compile & run this unique class.
+ *
+ * @author patriceo
  */
 public class VickreyDemo {
 
@@ -145,7 +147,7 @@ public class VickreyDemo {
      * @param object the sale object
      * @return AuctionResult if applicable or null in other cases
      */
-    AuctionResult computeWinner(AuctionObject object) throws AuctionException;
+    AuctionResult determineWinner(AuctionObject object) throws AuctionException;
   }
 
   /**
@@ -176,9 +178,9 @@ public class VickreyDemo {
      * @return AuctionResult the result for given auction sale object
      */
     @Override
-    public AuctionResult computeWinner(AuctionObject object) throws AuctionException {
+    public AuctionResult determineWinner(AuctionObject object) throws AuctionException {
       // Filter bids below reserve price
-      List<Bid> effectiveBids = object.bids.stream()
+      List<Bid> effectiveBids = object.getBids().stream()
           .filter((b) -> b.getPrice() > object.getReservePrice())
           .collect(Collectors.toList());
 
@@ -214,6 +216,8 @@ public class VickreyDemo {
    * Expected AuctionResult is "E" buyer with a 130
    */
   public void testVickreyAuction(AuctionStrategy vickreyStrategy) {
+    System.out.println("=> Test: testVickreyAuction");
+
     AuctionObject object = new AuctionObject(100);
     Buyer aBuyer = new Buyer("A");
     Buyer cBuyer = new Buyer("C");
@@ -225,7 +229,7 @@ public class VickreyDemo {
     object.addNewBids(dBuyer, 105, 115, 90);
     object.addNewBids(eBuyer, 132, 135, 140);
 
-    AuctionResult result = vickreyStrategy.computeWinner(object);
+    AuctionResult result = vickreyStrategy.determineWinner(object);
 
     assert result.price == 130;
     assert result.winner.buyer.equals(eBuyer);
@@ -233,7 +237,7 @@ public class VickreyDemo {
     System.out.println(String.format("Auction buyer = %s", result.winner.buyer));
     System.out.println(String.format("Auction buyer bid price = %d", result.winner.price));
     System.out.println(String.format("Auction price = %d", result.price));
-    System.out.println("testVickreyAuction OK");
+    System.out.println("=> testVickreyAuction OK");
   }
 
   /**
@@ -242,32 +246,36 @@ public class VickreyDemo {
    * - not enough buyers
    */
   public void testVickreyAuctionLimits(AuctionStrategy vickreyStrategy){
+    System.out.println("=> Test: testVickreyAuctionLimits");
+
     AuctionObject object = new AuctionObject(100);
     Buyer aBuyer = new Buyer("A");
     Buyer bBuyer = new Buyer("B");
     object.addNewBids(aBuyer, 12);
 
     try {
-      vickreyStrategy.computeWinner(object);
+      vickreyStrategy.determineWinner(object);
     } catch (AuctionException e) {
       assert "Need more bids above reserve !".equals(e.getMessage());
+      System.out.println("-> Need more bids Exception check OK");
     }
 
     object.addNewBids(aBuyer, 120, 154);
 
     try {
-      vickreyStrategy.computeWinner(object);
+      vickreyStrategy.determineWinner(object);
     } catch (AuctionException e) {
       assert "Need more buyers !".equals(e.getMessage());
+      System.out.println("-> Need more buyers Exception check OK");
     }
     object.addNewBids(bBuyer, 300, 110);
 
-    AuctionResult result = vickreyStrategy.computeWinner(object);
+    AuctionResult result = vickreyStrategy.determineWinner(object);
 
     assert result.winner.price == 300;
     assert result.winner.buyer.equals(bBuyer);
     assert result.price == 154;
-    System.out.println("testVickreyAuctionLimits OK");
+    System.out.println("=> testVickreyAuctionLimits OK");
   }
 
 
