@@ -1,8 +1,8 @@
 # vickrey-demo
 Requires Java >= 8 
-Scala SDK used: 2.11.7
+(Scala SDK used: 2.11.7)
 
-Both versions (Java&Scala) output should be like this:
+Both versions (Java & Scala) output should be like this:
 
 * => Test: testVickreyAuction
 * Auction buyer = E
