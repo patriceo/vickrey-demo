@@ -1,7 +1,8 @@
 # vickrey-demo
 Requires Java >= 8 
+Scala SDK used: 2.11.7
 
-Output should be like this:
+Both versions (Java&Scala) output should be like this:
 
 * => Test: testVickreyAuction
 * Auction buyer = E
@@ -12,3 +13,14 @@ Output should be like this:
 * -> Need more bids Exception check OK
 * -> Need more buyers Exception check OK
 * => testVickreyAuctionLimits OK
+
+Both versions are in a single class file and don't require additional librairies, so you just have to compile & run either VickreyDemo.java or VickreyDemo.scala
+
+From the project root:
+JAVA
+* javac org/devpo/VickreyDemo.java
+* java org/devpo/VickreyDemo
+
+SCALA
+* scalac org/devpo/VickreyDemo.java
+* scala VickreyDemo
