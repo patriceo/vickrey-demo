@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * This is a simple implementation for Vickrey auction algorithm.
  * This is very simple, so it does not rely on junit, or build tool or use different class files.
- * Just need to compile & run this unique class.
+ * Just need to compile & run this unique class. 
  */
 public class VickreyDemo {
 
@@ -138,9 +138,10 @@ public class VickreyDemo {
 
     /**
      * Return either an AuctionResult if SellObject context allow to decide an
-     * Auction "Winner" at a defined price. Returns null if the algorithm can not decide
+     * Auction "Winner" at a defined price. Throws an AuctionException if the algorithm can not decide
      * a winner (for instance if no bid or if algorithm rules do not match)
      *
+     * @throws AuctionException if rules on AuctionObject can not be matched
      * @param object the sale object
      * @return AuctionResult if applicable or null in other cases
      */
@@ -160,9 +161,6 @@ public class VickreyDemo {
    * The implementation is based on "Vickrey Auction" type of sealed-bid auction.
    *
    * @see <a href="https://en.wikipedia.org/wiki/Vickrey_auction">Wickrey Auction</a>
-   * <p>
-   * <p>
-   * Teads doc seems "buggy"
    */
   class VickreyAuctionStrategy implements AuctionStrategy {
 
@@ -181,7 +179,7 @@ public class VickreyDemo {
     public AuctionResult computeWinner(AuctionObject object) throws AuctionException {
       // Filter bids below reserve price
       List<Bid> effectiveBids = object.bids.stream()
-          .filter((b) -> b.price > object.reservePrice)
+          .filter((b) -> b.getPrice() > object.getReservePrice())
           .collect(Collectors.toList());
 
       if(effectiveBids.size()<2) throw new AuctionException("Need more bids above reserve !");
@@ -194,7 +192,7 @@ public class VickreyDemo {
 
       if (differentBuyers < 2) throw new AuctionException("Need more buyers !");
 
-      // Get the highest big == winner
+      // Get the highest bid == winner
       Bid highestBid = effectiveBids.stream()
           .max((b1, b2) -> Integer.compare(b1.getPrice(), b2.getPrice()))
           .get();
@@ -252,7 +250,7 @@ public class VickreyDemo {
     try {
       vickreyStrategy.computeWinner(object);
     } catch (AuctionException e) {
-      assert e.getMessage().equals("Need more bids above reserve !");
+      assert "Need more bids above reserve !".equals(e.getMessage());
     }
 
     object.addNewBids(aBuyer, 120, 154);
@@ -260,7 +258,7 @@ public class VickreyDemo {
     try {
       vickreyStrategy.computeWinner(object);
     } catch (AuctionException e) {
-      assert e.getMessage().equals("Need more buyers !");
+      assert "Need more buyers !".equals(e.getMessage());
     }
     object.addNewBids(bBuyer, 300, 110);
 
