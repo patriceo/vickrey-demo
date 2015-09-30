@@ -17,6 +17,7 @@ Both versions (Java & Scala) output should be like this:
 Both versions are in a single class file and don't require additional librairies, so you just have to compile & run either VickreyDemo.java or VickreyDemo.scala
 
 From the project root:
+
 JAVA
 * javac org/devpo/VickreyDemo.java
 * java org/devpo/VickreyDemo
